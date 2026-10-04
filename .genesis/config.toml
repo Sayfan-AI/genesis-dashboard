@@ -1,0 +1,38 @@
+[project]
+name = "genesis-dashboard"
+goal = "Build Genesis Dashboard - a web dashboard that shows a human the state of a Genesis dev system at a glance.
+
+A Genesis dev system keeps all of its state in GitHub: milestones, task issues, the needs:human gates waiting on a person, pull requests, and CI results. All of it is there, but it's scattered across issues, labels, and checks, and a human has to click through a dozen pages to answer simple questions like "is anything waiting on me?", "is anything stuck?", and "how far along is the current milestone?". Genesis Dashboard answers those questions on one page.
+
+Point it at a dev-system repository (for example Sayfan-AI/MaKlaude) and it shows:
+- The roadmap: each milestone, whether it's planned, active, or done, and progress within the active one.
+- Open needs:human gates, oldest first, with how long each has been waiting.
+- Open pull requests and their CI state, highlighting any that are stalled, such as green but unmerged, or red with nobody working on them.
+- Recent activity: what merged, closed, and opened lately.
+
+It is a static site, published with GitHub Pages, that reads public data from the GitHub API in the browser. No server and no stored credentials.
+
+A second capability comes after the dashboard works: a chat panel where a human can ask questions about that state in plain language ("what's blocking milestone 6?"). It talks to a local model through Ollama's OpenAI-compatible API on localhost, so it only appears when the dashboard runs locally, and the published site stays read-only.
+
+Guiding principles, not a blueprint - you decide the architecture, framework, and tools:
+- Small and finished beats large and partial. Keep the roadmap to two milestones: the dashboard first, the chat panel second.
+- Read-only. The dashboard never writes to GitHub.
+- Deterministic where possible. Everything except the chat answers is computed from GitHub data and covered by tests. The chat is tested against a stubbed model endpoint.
+- Useful on day one. It should work against any Genesis dev system, not only MaKlaude.
+
+Important boundary: the human chooses which repositories to point the dashboard at and runs Ollama locally. Building the dashboard and the chat panel is your job.
+"
+
+# Loki activity logging is configured entirely through the environment
+# (GENESIS_LOKI_URL / GENESIS_LOKI_USER / GENESIS_LOKI_TOKEN), not from this
+# file — the token is a secret and this file is committed.
+
+[issues]
+# Backend: "github" or "linear"
+backend = "github"
+
+[a2h]
+# A2H gateway endpoint
+# Set via environment: GENESIS_A2H_GATEWAY_URL
+gateway_url = ""
+

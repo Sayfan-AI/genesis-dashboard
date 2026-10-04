@@ -1,0 +1,278 @@
+# genesis-dashboard
+
+## Goal
+
+Build Genesis Dashboard - a web dashboard that shows a human the state of a Genesis dev system at a glance.
+
+A Genesis dev system keeps all of its state in GitHub: milestones, task issues, the needs:human gates waiting on a person, pull requests, and CI results. All of it is there, but it's scattered across issues, labels, and checks, and a human has to click through a dozen pages to answer simple questions like "is anything waiting on me?", "is anything stuck?", and "how far along is the current milestone?". Genesis Dashboard answers those questions on one page.
+
+Point it at a dev-system repository (for example Sayfan-AI/MaKlaude) and it shows:
+- The roadmap: each milestone, whether it's planned, active, or done, and progress within the active one.
+- Open needs:human gates, oldest first, with how long each has been waiting.
+- Open pull requests and their CI state, highlighting any that are stalled, such as green but unmerged, or red with nobody working on them.
+- Recent activity: what merged, closed, and opened lately.
+
+It is a static site, published with GitHub Pages, that reads public data from the GitHub API in the browser. No server and no stored credentials.
+
+A second capability comes after the dashboard works: a chat panel where a human can ask questions about that state in plain language ("what's blocking milestone 6?"). It talks to a local model through Ollama's OpenAI-compatible API on localhost, so it only appears when the dashboard runs locally, and the published site stays read-only.
+
+Guiding principles, not a blueprint - you decide the architecture, framework, and tools:
+- Small and finished beats large and partial. Keep the roadmap to two milestones: the dashboard first, the chat panel second.
+- Read-only. The dashboard never writes to GitHub.
+- Deterministic where possible. Everything except the chat answers is computed from GitHub data and covered by tests. The chat is tested against a stubbed model endpoint.
+- Useful on day one. It should work against any Genesis dev system, not only MaKlaude.
+
+Important boundary: the human chooses which repositories to point the dashboard at and runs Ollama locally. Building the dashboard and the chat panel is your job.
+
+
+
+
+## Meta-Concepts
+
+These are the principles this dev system operates by. Evolve them as the project matures.
+
+- **GitHub as coordination layer** — issues track progress, PRs deliver changes, CI/CD enforces quality. Humans and agents speak the same protocol.
+- **Quality gates and e2e testing** — code, tests, CI/CD, deployment are all first-class concerns.
+- **Self-improvement** — continuously evolve agents, skills, and strategies.
+- **Self-monitoring** — monitor progress, detect stuck/looping states, try to unblock, escalate to human when stuck.
+- **Minimal human-in-the-loop** — do everything possible autonomously. Highlight what requires human action and offer to do it if given access.
+- **Deterministic over agentic** — if a task is well-understood and doesn't need LLM judgment, build a deterministic tool (script, CLI, CI step). Reserve LLMs for fuzzy reasoning.
+- **Incremental planning** — only detail the current milestone. Future milestones stay high-level until they're next.
+
+## Agents
+
+Three agents are seeded, and they are the *loop*, not the architecture:
+
+- **orchestrator** — assesses state, plans, dispatches one unit of work per run, advances milestones
+- **human-interaction** — every exchange with the human: onboarding, escalations, progress reports
+- **evolver** — evolves this system: scripts, workflows, agent definitions, this file
+
+That is the entire roster, deliberately. **Nothing here says what agents the
+*project* needs** — no worker roles, no coordinator, no reviewer, no health
+agent. Those are architecture, and architecture is emergent here: a role gets
+added when this repo's own run history shows a pattern that needs one, and the
+evolver adds it with that evidence attached.
+
+This section used to list three more roles than the repo actually shipped, which
+is what a pre-committed roster costs. A named role gets built because it was
+named, the orchestrator starts routing to it, and the routing outlives whatever
+reason there was for the name. The same failure shows up one step earlier, at
+onboarding: on a sibling dev system the onboarding agent's design question
+*defaulted* to a fixed multi-agent shape — a coordinator delegating to two named
+roles — before the project had a line of code, off a goal that had named that
+shape as inspiration rather than as a requirement. A human caught that one.
+
+So before adding an agent, answer these in the issue that proposes it:
+
+- **What can't the system do today?** State the missing capability, not the role.
+- **How would you know it worked?** A done criterion the next run can check.
+- **Why an agent rather than a script, a skill, or a paragraph in this file?**
+  Deterministic over agentic — a role is the most expensive answer on that list
+  and by far the hardest to withdraw.
+- **What does it own that nothing else owns?** Two agents with overlapping
+  ownership means every run has to decide which one acts, and that decision
+  lives in no file.
+
+A proposal that can't answer them is a name, not a capability.
+
+## Execution Model
+
+GitHub Actions serve as the trigger layer:
+- **Scheduled workflows** (cron) — periodic advancement of project state
+- **Event-triggered workflows** — issue/PR events, human feedback, comments
+
+Each trigger launches a Claude Agent SDK session as the orchestrator.
+
+### Auto-Merge
+
+`genesis-merge.yml` squash-merges every open pull request that is bot-authored,
+not a draft, conflict-free, and green on **every** check, then dispatches the
+orchestrator so the loop continues. It's plain shell — no model, no turn budget,
+nothing to run out of. Two conventions keep it working, and both are yours to
+uphold:
+
+- **Name your CI workflow `CI`.** The merge workflow's fast path is
+  `workflow_run: workflows: ["CI"]`, which matches on a workflow's `name:`. Under
+  any other name the fast path never fires and merges wait for the hourly sweep.
+  If you must name it something else, add that name to the list.
+- **Put `Closes #<n>` in every worker pull request body.** GitHub closes the task
+  issue itself when such a pull request merges into the default branch. Nothing in
+  the merge path closes issues, so a pull request without the keyword lands work
+  and leaves its issue open. Keep the closing line bare — `Closes issue #117` is
+  not a closing keyword and GitHub silently ignores it.
+
+A pull request with no checks at all is never merged: in a repo that has CI, an
+empty check list means CI hasn't started, not that there's nothing to run.
+
+### When Something Fails
+
+Auto-merge is the green path and it has no red twin by construction: a check
+going green fires an event, a check going red fires nothing, and a pull request
+that fails is finished work sitting still. Three pieces cover that, and they
+degrade in that order.
+
+- **`genesis-ci-failure.yml`** wakes the orchestrator on a failing gating check,
+  with the run URL and branch in hand. Same `CI` naming convention as auto-merge
+  above — one name, upheld once. `check_suite` looks like the way to avoid
+  naming anything and isn't: GitHub doesn't deliver it for check suites created
+  by Actions, which is all of yours.
+- **`.genesis/scripts/escalate.sh`**, wired as an `if: failure()` step in every
+  workflow that can fail with work left undone. It opens or updates an issue
+  labelled `needs:human` + `automation:failure`, deduplicated per workflow so
+  repeated failures append rather than multiply. There is no model in this path
+  and there must not be one: the failure it exists for is a run that ran out of
+  turns, and an agent asked to escalate as its last act is an agent that never
+  reaches it.
+- **The orchestrator's own `Handling Failures` section**, which is where triage
+  belongs: read the log, write the diagnosis down *before* attempting a fix,
+  then fix small and known or escalate. Not in a workflow prompt, because local
+  mode runs no workflows.
+
+`automation:failure` is deliberately excluded from the scheduled orchestrator's
+`needs:human` gate. Both labels mean "a person should look", but only
+`needs:human` alone means "and nothing will progress until they do" — a died run
+isn't a decision, and gating on it would let one transient API error silence
+every scheduled tick until someone noticed the quiet. That's the original bug
+with a new hat on.
+
+### Turn Budgets
+
+Every workflow that invokes Claude must pass an explicit `--max-turns`, sized by
+workflow class. A session that dies at `error_max_turns` is the worst failure
+shape in this system: it produces no progress **and** no diagnosis, and the next
+run starts over from scratch.
+
+- **Orchestrator class** (`genesis-orchestrator`, `genesis-events`,
+  `genesis-evolver`) — open-ended work, and any subagents it dispatches spend from
+  the *same* budget. **Floor: 30 turns.** Seeded at 40.
+- **Narrow class** (anything running a fixed procedure) — kept deliberately small.
+  If it needs more turns it's wandering, and failing fast is the signal you want.
+  The fix is a tighter procedure, not a bigger budget. Push that far enough and
+  you land where `genesis-merge` did: no seeded workflow is narrow-class, because
+  a procedure with no fuzzy step left in it turned out to be shell, not an agent.
+
+Enforce this with a test, not a convention — a CI check that fails on any
+Claude-invoking workflow below its class floor, or with no `--max-turns` at all.
+When a run does die at max-turns, raise the budget for that whole *class* and
+record why; don't patch the single workflow and let the next one rediscover it.
+
+### Unanswered Human Comments
+
+Every safety net in here keys on CI state, issue/PR state, or run outcome. None
+of them keys on **a person having said something**, so a human instruction that
+lands while CI is running gets merged over, and nothing anywhere records that it
+happened. Measured on a sibling dev system (UTC): the bot announced a PR at
+06:18:37 with CI still running; the human approved at **06:29:18 attaching two
+conditions**; the PR merged on its own green checks at 06:31:43; the task issue
+closed at 06:31:44. The comment was unread for 2m25s, and two of the three things
+it asked for never shipped. Nothing failed — the merge gated on bot-author plus
+green checks, read no comment, and was correct on the evidence it had.
+
+`bash .genesis/scripts/issues.sh unanswered-comments` derives that missing state
+from the repo: threads whose newest comment is human-authored, stalest first.
+Detection needs no judgment; the design is in the four exclusions that keep it
+quiet enough to be read — a bot replied last, outside the window, the comment
+came *after* the close (a closing note), or the closer was a human. What survives
+is the one shape that matters: the human spoke and then the loop closed over
+them. `issues.sh summary` prints it every run under **Unanswered Human
+Comments**, empty meaning all-clear.
+
+**Re-run it immediately before merging a PR or closing a task issue.** A report
+only helps the *next* run, and the damage happens at merge time — a comment can
+land in the minutes between the summary you read and the merge you make. A
+comment attaching conditions to work in flight is part of that work's done
+criteria: satisfy them, or say which ones you aren't satisfying and why.
+
+That rule is for orchestrator-class sessions. A narrow-class runner is exempt **by
+its classification above**, not by a second list: "is this comment a condition?"
+is exactly the unbounded judgment its small budget exists to keep out. Two
+non-fixes rejected before this one — making the merge runner read comments (same
+sentence), and a "label your comment if it carries conditions" convention (an
+opt-in invariant isn't an invariant, and the member who forgets here is a
+*person*).
+
+The rule lives in this file and in `.claude/agents/*.md` rather than in a
+workflow prompt, for the reason the next section gives: local mode disables every
+`genesis-*` workflow, so a rule carried only by a workflow prompt reaches nobody
+there.
+
+### Milestone Tags
+
+A signed-off milestone gets a `milestone-N` git tag, so the state of the repo at
+that point stays reachable. `bash .genesis/scripts/tag-milestone.sh` derives them
+from repository state — a closed "Milestone N complete" issue is the sign-off, and
+the tag follows from it — so no agent has to remember at the right moment. It's
+idempotent; run it whenever.
+
+### Deterministic Steps That Must Run Before the Agent
+
+A check that needs no judgement should be a script, and a script that has to run
+*before* the agent gets its first turn goes in **`.genesis/scripts/pre-session.sh`**.
+
+Wiring it only as a workflow step isn't enough. Under `genesis serve` every
+`genesis-*` workflow is disabled and the session is launched directly, so a step
+placed ahead of the agent step in YAML silently stops existing in the mode the
+project may actually be running in — and the check goes back to being an agent's
+judgement call, which is the thing making it a script was meant to replace. That
+happened: a stale-gate nudge was written precisely because an unanswered
+`needs:human` gate is the one failure with no safety net, and one then sat open 21
+days across ~85 scheduled ticks.
+
+It's already wired, in both modes, and runs exactly once in either. It's declared
+on `SessionStart` in `.claude/settings.json`, which the harness fires under GitHub
+Actions and under `serve` alike, and `serve` additionally invokes it directly when
+that declaration is missing. Nothing to remember; just fill the file in.
+
+Keep it idempotent, fast, and non-fatal — it's on the critical path of every
+session start, and a net that can stop the loop it protects is worse than the gap
+it fills. Compose several checks inside this one script rather than asking for
+more conventional paths: a list of files defaults its next member to unwired,
+which is the shape that produced the problem in the first place.
+
+## Changing Your Own `.claude/`
+
+You can't, and no configuration change makes you able to. This is measured, not
+inferred: the harness refuses writes anywhere under `.claude/` for every tool,
+including a Bash redirect, and a `permissions.allow` entry doesn't relax it —
+whether it comes from this repo's `.claude/settings.json`, from the operator's
+`--settings`, or from a workspace that's been trusted. Only a blanket permission
+bypass gets through, and a session that can rewrite its own operating rules is a
+worse problem than the one it solves.
+
+That restriction is fine for prose and fatal for wiring. When you need a
+`.claude/` change:
+
+1. **Prose — a rule, a convention, an instruction to a future agent — goes in
+   this file instead.** `CLAUDE.md` reaches agents under GitHub Actions *and*
+   under `genesis serve`, which no workflow prompt does: local mode disables
+   every `genesis-*` workflow, so a rule that lives only in a workflow prompt
+   reaches nobody in the mode the project may actually be running in.
+2. **Wiring — a hook declaration in `.claude/settings.json`, agent front-matter,
+   a skill definition — has no alternative home.** Comment on the task issue with
+   the exact edit as a fenced diff or the full file content (not a description of
+   it), say which file it belongs in, and label the issue `needs:human`. Then
+   carry on with the rest of the task. That is completing the step, not failing
+   it: a change nobody can apply without reconstructing your reasoning is the
+   thing to avoid, and the request is what turns a human *edit* back into a human
+   *decision*.
+
+`.genesis/scripts/claude-dir-guard.sh` intercepts these writes and repeats these
+instructions at the moment you'd otherwise stall on a bare permission error.
+Reading `.claude/` is always allowed — that's how you know what to propose.
+
+## Tech Stack Preferences
+
+Defaults (override as needed):
+
+- **Open source + free tier only**
+- **Backend:** Rust (Go if K8s-heavy)
+- **CLI:** Rust
+- **Frontend:** Vite + React + TanStack Router + TanStack Query, Tailwind CSS, TypeScript (strict)
+- **Desktop:** Tauri
+- **Mobile:** React Native (Expo)
+- **Internal services:** gRPC
+- **Auth:** Ory stack (K8s), Rust crates (simple apps), Clerk (managed fallback)
+- **Observability:** OpenTelemetry + Grafana Cloud free tier
+- **Database:** Neon (serverless Postgres)
+- **Deployment:** Cloudflare, cloud free-tier
+- **Local dev:** Tilt + kind (K8s), LocalStack (AWS)

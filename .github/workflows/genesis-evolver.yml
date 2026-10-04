@@ -1,0 +1,96 @@
+name: Genesis Evolver
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+# One evolver at a time. Its own group, not the orchestrator's: the evolver is a
+# different agent doing different work, and sharing a group means whichever run
+# gets there second is cancelled rather than queued.
+#
+# Found by the parity test rather than by an incident here, which is the point of
+# that test. Genesis's own evolver got a group after `gh issue create --label`
+# fired both an `opened` and a `labeled` event and started two 40-turn agents on
+# genesis issue #37, racing to open competing pull requests. The template never
+# did, because no issue was ever filed naming the seeded copy - issues #11 and #22
+# named the orchestrator and the events workflow, and those got fixed. Every dev
+# system genesis has seeded still has that race.
+#
+# `cancel-in-progress: false` for the same reason as the orchestrator's: a queued
+# run may carry the only copy of a signal, and dropping it drops the signal.
+concurrency:
+  group: genesis-evolver-${{ github.repository }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  evolve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          # `client-id`, not the deprecated `app-id`. The secret still holds the
+          # numeric App ID and needs no adopter action - see the note in genesis's
+          # own CLAUDE.md for why the rename is safe on already-scaffolded repos.
+          client-id: ${{ secrets.GENESIS_APP_ID }}
+          private-key: ${{ secrets.GENESIS_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+          permission-workflows: write
+          # Without this every `gh run list` from inside the agent returns
+          # 403 Resource not accessible by integration, which silently removes
+          # failed workflow runs from the evolver's signal set - one of its
+          # primary inputs - and leaves it reviewing a system it cannot see
+          # failing (genesis issue #14, hit on the-gigi/butterfly). Read-only.
+          permission-actions: read
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          allowed_bots: "genesis-dev-bot[bot]"
+          # Reaches the activity-logging hooks in .claude/settings.json. The
+          # `settings` input MERGES with the repo's settings, so the hooks survive.
+          # Unset secrets render as empty strings and log.sh skips the push. There is
+          # no stderr consolation prize: Claude Code captures hook stderr into its
+          # own transcript, so unconfigured Loki means no activity trail at all.
+          settings: |
+            {
+              "env": {
+                "GENESIS_LOKI_URL": "${{ secrets.GENESIS_LOKI_URL }}",
+                "GENESIS_LOKI_USER": "${{ secrets.GENESIS_LOKI_USER }}",
+                "GENESIS_LOKI_TOKEN": "${{ secrets.GENESIS_LOKI_TOKEN }}"
+              }
+            }
+          prompt: |
+            Run the evolver agent defined in .claude/agents/evolver.md.
+            This is a scheduled review cycle - review recent system behavior and apply improvements.
+          # Orchestrator class — see the turn-budget floor in CLAUDE.md. A review
+          # cycle is broad, multi-file work (collect signals, change agents and
+          # workflows, update tests, commit), which is exactly the shape that dies
+          # at error_max_turns on a small budget.
+          # Enforced at >= 30 by tests/e2e/test_workflows.py.
+          claude_args: "--max-turns 40 --allowedTools Read,Write,Edit,Bash,Glob,Grep,Agent"
+
+      # Reasoning in escalate.sh. The evolver is the agent whose whole job is
+      # noticing that the system is failing, so nothing downstream notices when
+      # it's the one that fails - and on a daily cadence a silent death is a full
+      # day of the system running unreviewed before anything looks again.
+      - name: Escalate to a human if this run failed
+        if: failure()
+        run: bash .genesis/scripts/escalate.sh
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          WF_NAME: ${{ github.workflow }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
