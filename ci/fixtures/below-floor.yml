@@ -1,0 +1,11 @@
+name: below-floor
+on: workflow_dispatch
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            Run the orchestrator agent defined in .claude/agents/orchestrator.md.
+          claude_args: "--max-turns 10 --allowedTools Read,Bash"

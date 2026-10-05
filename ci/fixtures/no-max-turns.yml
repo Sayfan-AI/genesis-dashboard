@@ -1,0 +1,10 @@
+name: no-max-turns
+on: workflow_dispatch
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: Summarise the open issues.
+          claude_args: "--allowedTools Read"
