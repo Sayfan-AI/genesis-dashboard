@@ -90,6 +90,7 @@ for i in issues:
 format_unanswered_comments() {
     python3 - "$1" <<'PY'
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -153,9 +154,21 @@ for c in comments:
     if prior is None or ts(c['created_at']) > ts(prior['created_at']):
         newest[num] = c
 
+# Comments this script wrote itself — claim notes and release notes — carry a
+# `genesis-claim` / `genesis-release` marker. They're machine bookkeeping, not a
+# person speaking, whatever token posted them: a serve session that fell back to
+# the operator's gh credential authors them as the human. Keyed on the marker,
+# never on prose, so a human's own words can't be mistaken for one.
+SCRIPT_MARKER = re.compile(r'<!-- genesis-(claim|release)[ -]')
+
+
+def is_script_note(comment):
+    return bool(SCRIPT_MARKER.search(str(comment.get('body') or '')))
+
+
 rows = []
 for num, c in newest.items():
-    if is_bot(c.get('user')):
+    if is_bot(c.get('user')) or is_script_note(c):
         continue
     created = ts(c['created_at'])
     age = now - created
@@ -205,6 +218,10 @@ PY
 # `<!--` opens a markdown HTML block, and everything after the `-->` on that
 # line then renders as raw text rather than prose.
 CLAIM_MARKER="genesis-claim"
+# Release notes carry their own marker so `unanswered-comments` can tell them
+# from a person. It's deliberately not `genesis-claim ` (with the space), which
+# is the prefix `claim_rows` parses as a live claim.
+RELEASE_MARKER="genesis-release"
 
 # How long a claim may outlive the session holding it before the backstop sweep
 # takes it back. This is the only place age decides anything, and the window has
@@ -327,7 +344,7 @@ release_one() {
         return 1
     fi
     gh issue comment "$1" --body \
-        "Claim released: $2. \`in-progress\` is off, so this issue is selectable again." \
+        "Claim released: $2. \`in-progress\` is off, so this issue is selectable again. <!-- $RELEASE_MARKER -->" \
         >/dev/null || true
     echo "released #$1"
 }
@@ -879,11 +896,16 @@ EOF
             echo "Usage: issues.sh next --milestone N" >&2
             exit 1
         fi
+        # needs:human and needs:evolver are both skipped: each routes the issue
+        # to a specific owner (a person, the evolver), so an orchestrator that
+        # claims one can only release it again. Genesis-dashboard issue #16 was
+        # handed out twice that way before this filter existed.
         CANDIDATE="$(gh issue list --state open --label "milestone:$MILESTONE" \
             --json number,createdAt,labels --limit 100 \
             --jq '[.[] | select(([.labels[].name] | index("blocked")) == null)
                        | select(([.labels[].name] | index("in-progress")) == null)
-                       | select(([.labels[].name] | index("needs:human")) == null)]
+                       | select(([.labels[].name] | index("needs:human")) == null)
+                       | select(([.labels[].name] | index("needs:evolver")) == null)]
                   | sort_by(.createdAt) | .[0].number // empty')"
         if [ -z "$CANDIDATE" ]; then
             exit 3
