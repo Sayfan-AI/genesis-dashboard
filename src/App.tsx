@@ -1,9 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { Dashboard, type DashboardState } from './components/Dashboard'
-import { loadDashboard } from './dashboard/load'
-import { GitHubClient, GitHubError } from './github/client'
-import { DEFAULT_REPO, parseRepoParam } from './repo'
+import { SidePanel, type ListState, type PrivateState } from './components/SidePanel'
+import { dashboardQuery } from './dashboard/query'
+import { discoverDevSystems, type RepoList } from './discovery/discover'
+import { fetchRepoList } from './discovery/repoList'
+import { GitHubClient } from './github/client'
+import { DEFAULT_REPO, parseRepoParam, repoSearch, sameRepo, type RepoRef } from './repo'
 
 const MINUTE_MS = 60 * 1000
 
@@ -13,6 +16,8 @@ export interface AppProps {
   // Fixes the clock, for tests. Without it the page ticks once a minute so
   // "waiting" and "refreshed" times stay current.
   now?: Date
+  // Where the side panel's list comes from. Defaults to the build's repos.json.
+  loadRepoList?: () => Promise<RepoList>
 }
 
 function useNow(fixed: Date | undefined): Date {
@@ -25,21 +30,67 @@ function useNow(fixed: Date | undefined): Date {
   return fixed ?? now
 }
 
-export function App({ search = window.location.search, client: given, now: fixedNow }: AppProps) {
+export function App({
+  search = window.location.search,
+  client: given,
+  now: fixedNow,
+  loadRepoList = fetchRepoList,
+}: AppProps) {
+  const queryClient = useQueryClient()
   const [client] = useState(() => given ?? new GitHubClient())
-  const repo = parseRepoParam(search) ?? DEFAULT_REPO
+  const [repo, setRepo] = useState<RepoRef>(() => parseRepoParam(search) ?? DEFAULT_REPO)
+  // Bumped on every token change, so queries keyed on it see the new token.
+  const [tokenVersion, setTokenVersion] = useState(0)
+  const [hasToken, setHasToken] = useState(client.hasToken)
   const now = useNow(fixedNow)
 
-  const query = useQuery({
-    queryKey: ['dashboard', repo.owner, repo.name],
-    queryFn: () => loadDashboard(client, repo, fixedNow ?? new Date()),
-    // Every load spends the visitor's 60 requests/hour, so loads happen on
-    // open and on Refresh, not whenever the tab regains focus.
+  // Back and forward move between selected repos.
+  useEffect(() => {
+    const onPop = () => setRepo(parseRepoParam(window.location.search) ?? DEFAULT_REPO)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  const select = (next: RepoRef) => {
+    if (sameRepo(next, repo)) return
+    setRepo(next)
+    window.history.pushState(null, '', repoSearch(next))
+  }
+
+  const setToken = (token: string | null) => {
+    client.setToken(token)
+    setHasToken(client.hasToken)
+    setTokenVersion((version) => version + 1)
+    // A repo that failed without a token may load with one.
+    void queryClient.resetQueries({ queryKey: ['dashboard'], predicate: (query) => query.state.status === 'error' })
+  }
+
+  const query = useQuery(dashboardQuery(client, repo, fixedNow))
+
+  const listQuery = useQuery({ queryKey: ['repo-list'], queryFn: () => loadRepoList(), staleTime: Infinity, retry: false })
+  const org = listQuery.data?.org ?? DEFAULT_REPO.owner
+  // With a token, discovery runs in the browser too, to find the private dev
+  // systems the published list leaves out.
+  const privateQuery = useQuery({
+    queryKey: ['private-dev-systems', org, tokenVersion],
+    queryFn: async () => (await discoverDevSystems(client, org)).filter((found) => found.private),
+    enabled: hasToken,
     staleTime: Infinity,
-    refetchOnWindowFocus: false,
-    // A missing repo or a spent budget won't fix itself in a second.
-    retry: (failures, error) => !(error instanceof GitHubError && error.kind !== 'http') && failures < 2,
+    retry: false,
   })
+
+  const list: ListState = listQuery.data
+    ? { kind: 'ready', org: listQuery.data.org, repos: listQuery.data.repos }
+    : listQuery.isError
+      ? { kind: 'error' }
+      : { kind: 'loading' }
+  const privateRepos: PrivateState = !hasToken
+    ? { kind: 'no-token' }
+    : privateQuery.data
+      ? { kind: 'ready', repos: privateQuery.data }
+      : privateQuery.isError
+        ? { kind: 'error' }
+        : { kind: 'loading' }
 
   // A failed refresh keeps showing the last good data, with the error on top.
   const state: DashboardState = query.data
@@ -50,17 +101,32 @@ export function App({ search = window.location.search, client: given, now: fixed
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      <main className="mx-auto max-w-5xl">
-        <h1 className="px-6 pt-6 text-sm font-bold uppercase tracking-widest text-slate-400">Genesis Dashboard</h1>
-        <Dashboard
-          repo={repo}
-          state={state}
-          rateLimit={client.rateLimit}
-          now={now}
-          refreshing={query.isFetching}
-          onRefresh={() => void query.refetch()}
+      <h1 className="border-b border-slate-200 px-6 py-3 text-sm font-bold uppercase tracking-widest text-slate-400">
+        Genesis Dashboard
+      </h1>
+      <div className="flex flex-col md:flex-row">
+        <SidePanel
+          client={client}
+          list={list}
+          privateRepos={privateRepos}
+          selected={repo}
+          selectedSettled={!query.isPending}
+          onSelect={select}
+          onToken={setToken}
+          hasToken={hasToken}
+          now={fixedNow}
         />
-      </main>
+        <main className="min-w-0 flex-1">
+          <Dashboard
+            repo={repo}
+            state={state}
+            rateLimit={client.rateLimit}
+            now={now}
+            refreshing={query.isFetching}
+            onRefresh={() => void query.refetch()}
+          />
+        </main>
+      </div>
     </div>
   )
 }

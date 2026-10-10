@@ -67,6 +67,14 @@ export interface Issue {
   mergedAt: string | null
 }
 
+// An entry from an organization's repository listing.
+export interface OrgRepo {
+  name: string
+  fullName: string
+  private: boolean
+  archived: boolean
+}
+
 export interface IssueList {
   issues: Issue[]
   // True when the page cap cut the listing short.
@@ -149,6 +157,33 @@ export class GitHubClient {
       defaultBranch: raw.default_branch,
       private: raw.private,
       htmlUrl: raw.html_url,
+    }
+  }
+
+  // Every repository in an organization that the caller can see: public ones
+  // without a token, private ones too with a token that has access.
+  async listOrgRepos(org: string): Promise<OrgRepo[]> {
+    const { items } = await this.#getPaginated(
+      `/orgs/${encodeURIComponent(org)}/repos?type=all&sort=full_name&per_page=100`,
+    )
+    return (items as RawOrgRepo[]).map((raw) => ({
+      name: raw.name,
+      fullName: raw.full_name,
+      private: raw.private,
+      archived: raw.archived ?? false,
+    }))
+  }
+
+  // Whether a file exists on the default branch. A missing file and an empty
+  // repository both answer 404, and both mean no.
+  async hasFile(repo: RepoRef, path: string): Promise<boolean> {
+    const encoded = path.split('/').map(encodeURIComponent).join('/')
+    try {
+      await this.#get(`/repos/${repoPath(repo)}/contents/${encoded}`)
+      return true
+    } catch (error) {
+      if (error instanceof GitHubError && error.kind === 'not-found') return false
+      throw error
     }
   }
 
@@ -314,6 +349,13 @@ interface RawRepo {
   default_branch: string
   private: boolean
   html_url: string
+}
+
+interface RawOrgRepo {
+  name: string
+  full_name: string
+  private: boolean
+  archived?: boolean
 }
 
 interface RawIssue {

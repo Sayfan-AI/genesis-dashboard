@@ -180,6 +180,8 @@ describe('read-only', () => {
     listIssues: (c) => c.listIssues(MAKLAUDE),
     listOpenPulls: (c) => c.listOpenPulls(MAKLAUDE),
     listCheckRuns: (c) => c.listCheckRuns(MAKLAUDE, 'main'),
+    listOrgRepos: (c) => c.listOrgRepos('Sayfan-AI'),
+    hasFile: (c) => c.hasFile(MAKLAUDE, '.genesis/config.toml'),
     setToken: async (c) => c.setToken('ghp_example'),
   }
 
@@ -192,7 +194,7 @@ describe('read-only', () => {
   })
 
   it('only ever issues GET requests', async () => {
-    const { fetch, calls: requests } = replay(fixtures.maklaude.responses)
+    const { fetch, calls: requests } = replay({ ...fixtures.maklaude.responses, ...fixtures.sayfanOrg.responses })
     const client = new GitHubClient({ fetch, token: 'ghp_example' })
     for (const call of Object.values(calls)) {
       await call(client)
