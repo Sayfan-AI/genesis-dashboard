@@ -127,8 +127,14 @@ jobs:
           | map(
               select(.isDraft | not)
             # The dev system lands its own work. A pull request opened by a
-            # person stays a person's decision, always.
-            | select((.author.login // "") | endswith("[bot]"))
+            # person stays a person's decision, always. `gh pr list` reports a
+            # GitHub App author as {"login":"app/<slug>","is_bot":true}, never
+            # as `<slug>[bot]` (that's the REST/events spelling), so matching
+            # the `[bot]` suffix alone never selected a single real bot PR
+            # (genesis issue #93). `is_bot` is the signal; the suffix stays as
+            # a belt for any source that does use that spelling.
+            | select(.author.is_bot == true
+                     or ((.author.login // "") | endswith("[bot]")))
             | select(.mergeable == null or .mergeable == "MERGEABLE")
             # Two deliberate strictnesses, both of which look redundant next to
             # `mergeStateStatus == CLEAN` and aren't. GitHub reports CLEAN
