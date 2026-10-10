@@ -5,6 +5,7 @@ import type { FetchLike, GetInit } from './client'
 import { API_ORIGIN } from './client'
 import maklaude from './fixtures/Sayfan-AI__MaKlaude.json'
 import genesisDashboard from './fixtures/Sayfan-AI__genesis-dashboard.json'
+import sayfanOrg from '../discovery/fixtures/Sayfan-AI.json'
 
 export interface RecordedResponse {
   status: number
@@ -23,6 +24,9 @@ export interface Fixture {
 export const fixtures = {
   maklaude: maklaude as Fixture,
   genesisDashboard: genesisDashboard as Fixture,
+  // The Sayfan-AI org listing and a marker-file lookup per repository, written
+  // by `node scripts/discover-repos.ts --record`.
+  sayfanOrg: sayfanOrg as Fixture,
 }
 
 export interface ReplayOptions {

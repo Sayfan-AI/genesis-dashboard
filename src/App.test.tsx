@@ -10,7 +10,8 @@ function renderApp(search: string, fetch: FetchLike, now: Date) {
   const client = new GitHubClient({ fetch })
   render(
     <QueryClientProvider client={queryClient}>
-      <App search={search} client={client} now={now} />
+      {/* No panel entries here, so only the selected repo spends requests. SidePanel.test.tsx covers the panel. */}
+      <App search={search} client={client} now={now} loadRepoList={async () => ({ org: 'Sayfan-AI', generatedAt: '', repos: [] })} />
     </QueryClientProvider>,
   )
   return { client }

@@ -28,3 +28,5 @@
 node_modules/
 dist/
 *.tsbuildinfo
+# Written at deploy time by `npm run discover`; never committed, so it can't go stale.
+public/repos.json

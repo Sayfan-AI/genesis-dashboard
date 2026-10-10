@@ -29,6 +29,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Writes public/repos.json, which Vite copies into the site. A failure
+      # fails the deploy: shipping an empty side panel would look like an org
+      # with no dev systems. The token only raises the rate limit; private
+      # repos are left out of the file regardless.
+      - run: npm run discover
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
