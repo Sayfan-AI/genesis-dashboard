@@ -3,6 +3,9 @@ export interface RepoRef {
   name: string
 }
 
+// What the published site shows when no `?repo=` is given.
+export const DEFAULT_REPO: RepoRef = { owner: 'Sayfan-AI', name: 'MaKlaude' }
+
 const REPO_PATTERN = /^([A-Za-z0-9-]+)\/([A-Za-z0-9._-]+)$/
 
 // Parses the `?repo=owner/name` query parameter. Returns null when it's
