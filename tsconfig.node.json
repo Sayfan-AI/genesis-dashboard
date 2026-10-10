@@ -12,8 +12,10 @@
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "strict": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["vite.config.ts", "eslint.config.js", "ci"]
+  "include": ["vite.config.ts", "eslint.config.js", "ci", "scripts"]
 }
