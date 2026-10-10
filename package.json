@@ -13,7 +13,8 @@
     "typecheck": "tsc -b",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "record-fixtures": "node scripts/record-fixtures.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.1",

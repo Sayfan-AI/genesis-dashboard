@@ -1,0 +1,1086 @@
+{
+  "repo": "Sayfan-AI/genesis-dashboard",
+  "recordedAt": "2026-10-10T20:06:24.621Z",
+  "responses": {
+    "/repos/Sayfan-AI/genesis-dashboard": {
+      "status": 200,
+      "etag": "W/\"b5ff678103603711dac069d951520b5a9230f2cb06ea1c3d6ff80c4d5a284719\"",
+      "link": null,
+      "body": {
+        "id": 1404916934,
+        "name": "genesis-dashboard",
+        "full_name": "Sayfan-AI/genesis-dashboard",
+        "private": false,
+        "owner": {
+          "login": "Sayfan-AI",
+          "type": "Organization"
+        },
+        "html_url": "https://github.com/Sayfan-AI/genesis-dashboard",
+        "description": null,
+        "fork": false,
+        "created_at": "2026-10-04T23:32:41Z",
+        "updated_at": "2026-10-05T05:40:55Z",
+        "pushed_at": "2026-10-05T05:40:50Z",
+        "homepage": null,
+        "size": 125,
+        "stargazers_count": 0,
+        "watchers_count": 0,
+        "language": "Shell",
+        "has_issues": true,
+        "has_projects": true,
+        "has_downloads": false,
+        "has_wiki": true,
+        "has_pages": true,
+        "has_discussions": false,
+        "forks_count": 0,
+        "archived": false,
+        "disabled": false,
+        "open_issues_count": 6,
+        "license": null,
+        "allow_forking": true,
+        "is_template": false,
+        "web_commit_signoff_required": false,
+        "has_pull_requests": true,
+        "pull_request_creation_policy": "all",
+        "topics": [],
+        "visibility": "public",
+        "forks": 0,
+        "open_issues": 6,
+        "watchers": 0,
+        "default_branch": "main",
+        "temp_clone_token": null,
+        "custom_properties": {},
+        "network_count": 0,
+        "subscribers_count": 0
+      }
+    },
+    "/repos/Sayfan-AI/genesis-dashboard/issues?state=all&per_page=100": {
+      "status": 200,
+      "etag": "W/\"955ec54681d0401a050c46d18dc778c40d6354c9c02f28c69866caefde107a4b\"",
+      "link": null,
+      "body": [
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/pull/14",
+          "id": 5706994703,
+          "number": 14,
+          "title": "Task 3: GitHub Pages deploy",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T05:38:43Z",
+          "updated_at": "2026-10-05T05:40:51Z",
+          "closed_at": "2026-10-05T05:40:50Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "draft": false,
+          "pull_request": {
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/pull/14",
+            "merged_at": "2026-10-05T05:40:50Z"
+          },
+          "closed_by": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "state_reason": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/13",
+          "id": 5705370415,
+          "number": 13,
+          "title": "Seed workflows cite a turn-budget test that genesis doesn't ship",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12543667834,
+              "name": "needs:evolver",
+              "color": "5319e7",
+              "default": false,
+              "description": "Framework-level finding for the evolver to take upstream",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "open",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T02:02:14Z",
+          "updated_at": "2026-10-05T02:02:14Z",
+          "closed_at": null,
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": null,
+          "state_reason": null,
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/pull/12",
+          "id": 5705367749,
+          "number": 12,
+          "title": "Task 2: turn-budget guard test",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T02:01:49Z",
+          "updated_at": "2026-10-05T02:06:11Z",
+          "closed_at": "2026-10-05T02:06:09Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "draft": false,
+          "pull_request": {
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/pull/12",
+            "merged_at": "2026-10-05T02:06:09Z"
+          },
+          "closed_by": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "state_reason": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/pull/11",
+          "id": 5705243372,
+          "number": 11,
+          "title": "Task 1: scaffold + CI",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T01:43:44Z",
+          "updated_at": "2026-10-05T01:48:26Z",
+          "closed_at": "2026-10-05T01:48:23Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "draft": false,
+          "pull_request": {
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/pull/11",
+            "merged_at": "2026-10-05T01:48:23Z"
+          },
+          "closed_by": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "state_reason": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/10",
+          "id": 5705186683,
+          "number": 10,
+          "title": "Task 8: Milestone 1 acceptance check",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12543410796,
+              "name": "blocked",
+              "color": "b60205",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "open",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T01:36:32Z",
+          "updated_at": "2026-10-05T01:36:32Z",
+          "closed_at": null,
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": null,
+          "state_reason": null,
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/9",
+          "id": 5705186560,
+          "number": 9,
+          "title": "Task 7: Org discovery + side panel",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12543410796,
+              "name": "blocked",
+              "color": "b60205",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "open",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T01:36:31Z",
+          "updated_at": "2026-10-05T01:36:31Z",
+          "closed_at": null,
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": null,
+          "state_reason": null,
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/8",
+          "id": 5705186391,
+          "number": 8,
+          "title": "Task 6: Dashboard UI",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12543410796,
+              "name": "blocked",
+              "color": "b60205",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "open",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T01:36:30Z",
+          "updated_at": "2026-10-05T01:36:30Z",
+          "closed_at": null,
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": null,
+          "state_reason": null,
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/7",
+          "id": 5705186193,
+          "number": 7,
+          "title": "Task 5: Pure derivations (roadmap, gates, PRs, activity)",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12543410796,
+              "name": "blocked",
+              "color": "b60205",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "open",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 0,
+          "created_at": "2026-10-05T01:36:28Z",
+          "updated_at": "2026-10-05T01:36:28Z",
+          "closed_at": null,
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": null,
+          "state_reason": null,
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/6",
+          "id": 5705186061,
+          "number": 6,
+          "title": "Task 4: Read-only GitHub client + recorded fixtures",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12543410883,
+              "name": "in-progress",
+              "color": "fbca04",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "open",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 2,
+          "created_at": "2026-10-05T01:36:27Z",
+          "updated_at": "2026-10-10T20:03:40Z",
+          "closed_at": null,
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": null,
+          "state_reason": null,
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/5",
+          "id": 5705185754,
+          "number": 5,
+          "title": "Task 3: GitHub Pages deploy",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 3,
+          "created_at": "2026-10-05T01:36:25Z",
+          "updated_at": "2026-10-05T05:42:30Z",
+          "closed_at": "2026-10-05T05:40:52Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "state_reason": "completed",
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/4",
+          "id": 5705185608,
+          "number": 4,
+          "title": "Task 2: Turn-budget guard test",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 2,
+          "created_at": "2026-10-05T01:36:24Z",
+          "updated_at": "2026-10-05T02:06:34Z",
+          "closed_at": "2026-10-05T02:06:10Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "state_reason": "completed",
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/3",
+          "id": 5705185462,
+          "number": 3,
+          "title": "Task 1: Scaffold + CI",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 2,
+          "created_at": "2026-10-05T01:36:23Z",
+          "updated_at": "2026-10-05T01:48:58Z",
+          "closed_at": "2026-10-05T01:48:24Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "state_reason": "completed",
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/2",
+          "id": 5705031003,
+          "number": 2,
+          "title": "Milestone 1 plan",
+          "user": {
+            "login": "genesis-dev-bot[bot]",
+            "type": "Bot"
+          },
+          "labels": [
+            {
+              "id": 12542888418,
+              "name": "needs:human",
+              "color": "B60205",
+              "default": false,
+              "description": "Waiting on a human decision",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12543410688,
+              "name": "milestone:1",
+              "color": "1d76db",
+              "default": false,
+              "description": "",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 1,
+          "created_at": "2026-10-05T01:16:07Z",
+          "updated_at": "2026-10-05T01:34:22Z",
+          "closed_at": "2026-10-05T01:34:22Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": {
+            "login": "the-gigi",
+            "type": "User"
+          },
+          "state_reason": "completed",
+          "pinned_comment": null
+        },
+        {
+          "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/issues/1",
+          "id": 5704312538,
+          "number": 1,
+          "title": "Onboarding: genesis-dashboard",
+          "user": {
+            "login": "the-gigi",
+            "type": "User"
+          },
+          "labels": [
+            {
+              "id": 12542880029,
+              "name": "genesis:onboarding",
+              "color": "0E8A16",
+              "default": false,
+              "description": "Genesis onboarding issue",
+              "archived_at": null,
+              "archived_by": null
+            },
+            {
+              "id": 12542888418,
+              "name": "needs:human",
+              "color": "B60205",
+              "default": false,
+              "description": "Waiting on a human decision",
+              "archived_at": null,
+              "archived_by": null
+            }
+          ],
+          "state": "closed",
+          "locked": false,
+          "assignees": [],
+          "milestone": null,
+          "comments": 4,
+          "created_at": "2026-10-04T23:32:55Z",
+          "updated_at": "2026-10-05T01:14:21Z",
+          "closed_at": "2026-10-05T01:14:21Z",
+          "assignee": null,
+          "author_association": "CONTRIBUTOR",
+          "issue_field_values": [],
+          "type": null,
+          "active_lock_reason": null,
+          "sub_issues_summary": {
+            "total": 0,
+            "completed": 0,
+            "percent_completed": 0
+          },
+          "issue_dependencies_summary": {
+            "blocked_by": 0,
+            "total_blocked_by": 0,
+            "blocking": 0,
+            "total_blocking": 0
+          },
+          "closed_by": {
+            "login": "the-gigi",
+            "type": "User"
+          },
+          "state_reason": "completed",
+          "pinned_comment": null
+        }
+      ]
+    },
+    "/repos/Sayfan-AI/genesis-dashboard/pulls?state=open&per_page=100": {
+      "status": 200,
+      "etag": "\"74d1db57f0fec3481bb6b4d9bcdc020d656635ec6c53ee589d27a8831cbbe280\"",
+      "link": null,
+      "body": []
+    },
+    "/repos/Sayfan-AI/genesis-dashboard/commits/main/check-runs?per_page=100": {
+      "status": 200,
+      "etag": "W/\"b4f7946037d4456222a90796297b677354d515ebc3ae88803544a3f9c440c00f\"",
+      "link": null,
+      "body": {
+        "total_count": 15,
+        "check_runs": [
+          {
+            "id": 114213983098,
+            "name": "deploy",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "819b1e95-8f4b-59d1-aae7-111b1cedd23f",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/38052381501/job/114213983098",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-10T12:33:38Z",
+            "completed_at": "2026-10-10T12:33:47Z",
+            "check_suite": {
+              "id": 103103558229
+            },
+            "pull_requests": [],
+            "deployment": {
+              "id": 6980770380,
+              "task": "deploy",
+              "original_environment": "github-pages",
+              "environment": "github-pages",
+              "description": null,
+              "created_at": "2026-10-10T12:33:35Z",
+              "updated_at": "2026-10-10T12:33:48Z"
+            }
+          },
+          {
+            "id": 114213930279,
+            "name": "build",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "0b499a8c-bd0d-5b37-8841-8f8dc8b3ec1c",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/38052381501/job/114213930279",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-10T12:33:19Z",
+            "completed_at": "2026-10-10T12:33:34Z",
+            "check_suite": {
+              "id": 103103558229
+            },
+            "pull_requests": []
+          },
+          {
+            "id": 113837876339,
+            "name": "deploy",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "8cb2299e-c5a1-55a9-9457-50f5b354132c",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37935894578/job/113837876339",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-09T13:18:48Z",
+            "completed_at": "2026-10-09T13:18:58Z",
+            "check_suite": {
+              "id": 102784112543
+            },
+            "pull_requests": [],
+            "deployment": {
+              "id": 6961664673,
+              "task": "deploy",
+              "original_environment": "github-pages",
+              "environment": "github-pages",
+              "description": null,
+              "created_at": "2026-10-09T13:18:45Z",
+              "updated_at": "2026-10-09T13:18:58Z"
+            }
+          },
+          {
+            "id": 113837733547,
+            "name": "build",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "01b33dc4-6063-56ca-8a96-5514ce021c9f",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37935894578/job/113837733547",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-09T13:18:26Z",
+            "completed_at": "2026-10-09T13:18:45Z",
+            "check_suite": {
+              "id": 102784112543
+            },
+            "pull_requests": []
+          },
+          {
+            "id": 113337288624,
+            "name": "deploy",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "4cbdf016-c53f-5a80-b0ca-6922f578cf25",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37784943660/job/113337288624",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-08T13:31:15Z",
+            "completed_at": "2026-10-08T13:31:24Z",
+            "check_suite": {
+              "id": 102366885585
+            },
+            "pull_requests": [],
+            "deployment": {
+              "id": 6936893384,
+              "task": "deploy",
+              "original_environment": "github-pages",
+              "environment": "github-pages",
+              "description": null,
+              "created_at": "2026-10-08T13:31:11Z",
+              "updated_at": "2026-10-08T13:31:25Z"
+            }
+          },
+          {
+            "id": 113337167277,
+            "name": "build",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "5603e00e-fdd4-5a69-975a-620dd1ce3352",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37784943660/job/113337167277",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-08T13:30:58Z",
+            "completed_at": "2026-10-08T13:31:11Z",
+            "check_suite": {
+              "id": 102366885585
+            },
+            "pull_requests": []
+          },
+          {
+            "id": 112816001243,
+            "name": "deploy",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "46915525-ac4e-5acd-a89b-1a7fd1c86498",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37628343079/job/112816001243",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-07T13:25:46Z",
+            "completed_at": "2026-10-07T13:25:57Z",
+            "check_suite": {
+              "id": 101932685555
+            },
+            "pull_requests": [],
+            "deployment": {
+              "id": 6911153188,
+              "task": "deploy",
+              "original_environment": "github-pages",
+              "environment": "github-pages",
+              "description": null,
+              "created_at": "2026-10-07T13:25:42Z",
+              "updated_at": "2026-10-07T13:25:58Z"
+            }
+          },
+          {
+            "id": 112815826782,
+            "name": "build",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "b72bba0d-acab-5bcb-850f-3610ada94185",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37628343079/job/112815826782",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-07T13:25:21Z",
+            "completed_at": "2026-10-07T13:25:42Z",
+            "check_suite": {
+              "id": 101932685555
+            },
+            "pull_requests": []
+          },
+          {
+            "id": 112290351703,
+            "name": "deploy",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "31ae4b9b-97b3-54cd-88d4-8bf3a8459491",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37469863294/job/112290351703",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-06T13:19:38Z",
+            "completed_at": "2026-10-06T13:19:48Z",
+            "check_suite": {
+              "id": 101494130243
+            },
+            "pull_requests": [],
+            "deployment": {
+              "id": 6885045707,
+              "task": "deploy",
+              "original_environment": "github-pages",
+              "environment": "github-pages",
+              "description": null,
+              "created_at": "2026-10-06T13:19:34Z",
+              "updated_at": "2026-10-06T13:19:49Z"
+            }
+          },
+          {
+            "id": 112290230142,
+            "name": "build",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "7314ac1c-12ea-54ac-a3f6-c1fd9a45a13d",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37469863294/job/112290230142",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-06T13:19:19Z",
+            "completed_at": "2026-10-06T13:19:33Z",
+            "check_suite": {
+              "id": 101494130243
+            },
+            "pull_requests": []
+          },
+          {
+            "id": 111819358160,
+            "name": "deploy",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "6ac0257f-a29b-59d7-8951-e60c7862b085",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37326715799/job/111819358160",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T14:41:41Z",
+            "completed_at": "2026-10-05T14:41:52Z",
+            "check_suite": {
+              "id": 101101210681
+            },
+            "pull_requests": [],
+            "deployment": {
+              "id": 6861962371,
+              "task": "deploy",
+              "original_environment": "github-pages",
+              "environment": "github-pages",
+              "description": null,
+              "created_at": "2026-10-05T14:41:37Z",
+              "updated_at": "2026-10-05T14:41:53Z"
+            }
+          },
+          {
+            "id": 111819232460,
+            "name": "build",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "b235e73e-19a4-5f51-88de-44dfffae60ea",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37326715799/job/111819232460",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T14:41:22Z",
+            "completed_at": "2026-10-05T14:41:36Z",
+            "check_suite": {
+              "id": 101101210681
+            },
+            "pull_requests": []
+          },
+          {
+            "id": 111631438802,
+            "name": "deploy",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "f853f933-f9bb-59cf-b3e1-3b99c59d09a8",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37268856014/job/111631438802",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:41:20Z",
+            "completed_at": "2026-10-05T05:41:30Z",
+            "check_suite": {
+              "id": 100943005419
+            },
+            "pull_requests": [],
+            "deployment": {
+              "id": 6852155468,
+              "task": "deploy",
+              "original_environment": "github-pages",
+              "environment": "github-pages",
+              "description": null,
+              "created_at": "2026-10-05T05:41:15Z",
+              "updated_at": "2026-10-05T05:41:31Z"
+            }
+          },
+          {
+            "id": 111631360761,
+            "name": "build",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "7719d3f2-8dfa-5c95-8d61-cabfa10a2cd1",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37268856014/job/111631360761",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:40:56Z",
+            "completed_at": "2026-10-05T05:41:15Z",
+            "check_suite": {
+              "id": 100943005419
+            },
+            "pull_requests": []
+          },
+          {
+            "id": 111631359889,
+            "name": "check",
+            "head_sha": "c78044a201a5f0f2b3d3904df8c6943c723456f1",
+            "external_id": "902a3552-0d24-5e1e-96dd-30131d569c7e",
+            "html_url": "https://github.com/Sayfan-AI/genesis-dashboard/actions/runs/37268855935/job/111631359889",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:40:56Z",
+            "completed_at": "2026-10-05T05:41:08Z",
+            "check_suite": {
+              "id": 100943005233
+            },
+            "pull_requests": []
+          }
+        ]
+      }
+    }
+  }
+}
