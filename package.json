@@ -15,7 +15,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "record-fixtures": "node scripts/record-fixtures.ts",
-    "discover": "node scripts/discover-repos.ts"
+    "discover": "node scripts/discover-repos.ts",
+    "live-check": "node scripts/live-check.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.1",
