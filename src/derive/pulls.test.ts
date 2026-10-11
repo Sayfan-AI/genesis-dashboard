@@ -22,6 +22,10 @@ describe('derivePulls against recorded fixtures', () => {
 })
 
 describe('ciState', () => {
+  it('is unknown when the check runs could not be read', () => {
+    expect(ciState(null)).toBe('unknown')
+  })
+
   it('is none with no checks, so an unstarted CI never reads as green', () => {
     expect(ciState([])).toBe('none')
   })
@@ -44,6 +48,14 @@ describe('ciState', () => {
 })
 
 describe('stallOf', () => {
+  it('never flags a pull request whose check runs could not be read', () => {
+    const ancient = pull({ number: 1, createdAt: '2026-01-01T00:00:00Z', updatedAt: '2026-01-01T00:00:00Z' })
+    expect(stallOf({ pull: ancient, checks: null }, NOW)).toBeNull()
+    expect(derivePulls([{ pull: ancient, checks: null }], NOW)).toEqual([
+      { pull: ancient, ci: 'unknown', failingChecks: [], stall: null },
+    ])
+  })
+
   it('flags green and unmerged strictly past two hours since the last check finished', () => {
     const checks = [check('a', 'success', '2026-10-10T09:00:00Z'), check('b', 'success', '2026-10-10T10:00:00Z')]
     expect(stallOf({ pull: pull({ number: 1 }), checks }, NOW)).toBeNull()
