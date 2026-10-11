@@ -68,6 +68,7 @@ const CI_LABEL: Record<CiState, string> = {
   pending: 'CI running',
   passing: 'CI green',
   failing: 'CI red',
+  unknown: 'CI state unavailable',
 }
 
 const CI_CLASS: Record<CiState, string> = {
@@ -75,6 +76,7 @@ const CI_CLASS: Record<CiState, string> = {
   pending: 'text-amber-700',
   passing: 'text-green-700',
   failing: 'text-red-700',
+  unknown: 'text-slate-500',
 }
 
 const STALL_LABEL: Record<Stall, string> = {

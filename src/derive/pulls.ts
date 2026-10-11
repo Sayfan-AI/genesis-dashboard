@@ -3,15 +3,18 @@ import type { CheckRun, PullRequest } from '../github/client'
 import { DEFAULT_THRESHOLDS, elapsedMs, type Thresholds } from './config'
 
 // 'none' means no check has reported yet. In a repo with CI that's "not
-// started", not "nothing to run", so it never counts as green.
-export type CiState = 'none' | 'pending' | 'passing' | 'failing'
+// started", not "nothing to run", so it never counts as green. 'unknown' means
+// the check runs couldn't be read (a token without `checks: read`, or a 5xx),
+// so it's neither green nor red and never counts as stalled.
+export type CiState = 'none' | 'pending' | 'passing' | 'failing' | 'unknown'
 
 export type Stall = 'green-unmerged' | 'red-untouched'
 
 export interface PullInput {
   pull: PullRequest
-  // Check runs for the pull request's head commit.
-  checks: CheckRun[]
+  // Check runs for the pull request's head commit, or null when they couldn't
+  // be read.
+  checks: CheckRun[] | null
 }
 
 export interface PullStatus {
@@ -31,7 +34,8 @@ export function checkOutcome(check: CheckRun): CheckOutcome {
 }
 
 // One failure makes the whole thing red, even while other checks still run.
-export function ciState(checks: CheckRun[]): CiState {
+export function ciState(checks: CheckRun[] | null): CiState {
+  if (checks === null) return 'unknown'
   if (checks.length === 0) return 'none'
   const outcomes = checks.map(checkOutcome)
   if (outcomes.includes('failing')) return 'failing'
@@ -53,6 +57,7 @@ function latest(timestamps: (string | null)[]): string | null {
 // moved for longer than the threshold. Drafts count: red and idle is idle.
 export function stallOf(input: PullInput, now: Date, thresholds: Thresholds = DEFAULT_THRESHOLDS): Stall | null {
   const { pull, checks } = input
+  if (checks === null) return null
   const ci = ciState(checks)
   if (ci === 'passing' && !pull.draft) {
     const greenSince = latest(checks.map((c) => c.completedAt)) ?? pull.updatedAt
@@ -72,7 +77,7 @@ export function derivePulls(inputs: PullInput[], now: Date, thresholds: Threshol
     .map((input) => ({
       pull: input.pull,
       ci: ciState(input.checks),
-      failingChecks: input.checks.filter((c) => checkOutcome(c) === 'failing'),
+      failingChecks: (input.checks ?? []).filter((c) => checkOutcome(c) === 'failing'),
       stall: stallOf(input, now, thresholds),
     }))
     .sort((a, b) => Date.parse(a.pull.createdAt) - Date.parse(b.pull.createdAt) || a.pull.number - b.pull.number)

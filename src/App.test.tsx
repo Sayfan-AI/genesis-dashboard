@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { describe, expect, it } from 'vitest'
 import { App } from './App'
 import { GitHubClient, type FetchLike } from './github/client'
-import { fixtures, replay, type Fixture } from './github/fixtures'
+import { fixtures, replay, type Fixture, type RecordedResponse } from './github/fixtures'
 
 function renderApp(search: string, fetch: FetchLike, now: Date) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -126,6 +126,57 @@ describe('App degraded states', () => {
     expect(screen.getByText('Nothing is waiting on you.')).toBeInTheDocument()
     expect(screen.getByText('No open pull requests.')).toBeInTheDocument()
     expect(screen.getByText('Nothing merged, closed, or opened in the last 7d.')).toBeInTheDocument()
+  })
+
+  // Two open pull requests on this repo's fixture, one whose check runs a token
+  // without `checks: read` can't see, as on Sayfan-AI/repo-guardian.
+  function withCheckRuns(checksFor: Record<string, RecordedResponse>) {
+    const base = '/repos/Sayfan-AI/genesis-dashboard'
+    const rawPull = (number: number) => ({
+      number,
+      title: `PR ${number}`,
+      draft: false,
+      head: { sha: `sha${number}` },
+      user: { login: 'genesis-dev-bot' },
+      html_url: `https://github.com/Sayfan-AI/genesis-dashboard/pull/${number}`,
+      created_at: `2026-10-10T1${number}:00:00Z`,
+      updated_at: `2026-10-10T1${number}:00:00Z`,
+    })
+    return {
+      ...fixtures.genesisDashboard.responses,
+      [`${base}/pulls?state=open&per_page=100`]: { status: 200, etag: null, link: null, body: [rawPull(1), rawPull(2)] },
+      [`${base}/commits/sha1/check-runs?per_page=100`]: { status: 200, etag: null, link: null, body: { check_runs: [] } },
+      ...Object.fromEntries(Object.entries(checksFor).map(([sha, r]) => [`${base}/commits/${sha}/check-runs?per_page=100`, r])),
+    }
+  }
+
+  it('degrades one pull request to an unavailable CI state when its check runs 403', async () => {
+    const forbidden = { status: 403, etag: null, link: null, body: { message: 'Resource not accessible by integration' } }
+    const recording = replay(withCheckRuns({ sha2: forbidden }), { rateLimit: { limit: 5000, remaining: 4000, reset: 1_800_000_000 } })
+    renderApp('?repo=Sayfan-AI/genesis-dashboard', recording.fetch, new Date(fixtures.genesisDashboard.recordedAt))
+    const roadmap = await screen.findByRole('region', { name: /roadmap/i })
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(within(roadmap).getAllByRole('listitem')).toHaveLength(1)
+    expect(region(/gates/i)).toBeInTheDocument()
+    expect(region(/recent activity/i)).toBeInTheDocument()
+    const pulls = within(region(/pull requests/i))
+    expect(pulls.getByText('no checks yet')).toBeInTheDocument()
+    expect(pulls.getByText('CI state unavailable')).toBeInTheDocument()
+    expect(pulls.queryByText(/stalled/)).not.toBeInTheDocument()
+  })
+
+  it('still shows the rate limit when it runs out on check runs', async () => {
+    const recording = replay(withCheckRuns({}), { rateLimit: { limit: 60, remaining: 50, reset: 1_800_000_000 } })
+    const fetch: FetchLike = async (url, init) =>
+      url.includes('/check-runs')
+        ? new Response(JSON.stringify({ message: 'API rate limit exceeded' }), {
+            status: 403,
+            headers: { 'x-ratelimit-limit': '60', 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '1800000000' },
+          })
+        : recording.fetch(url, init)
+    renderApp('?repo=Sayfan-AI/genesis-dashboard', fetch, now)
+    expect(await screen.findByRole('alert')).toHaveTextContent('Rate limited')
+    expect(screen.queryByText('CI state unavailable')).not.toBeInTheDocument()
   })
 
   it('shows a loading state before the first response', () => {
