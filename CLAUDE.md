@@ -229,6 +229,24 @@ it fills. Compose several checks inside this one script rather than asking for
 more conventional paths: a list of files defaults its next member to unwired,
 which is the shape that produced the problem in the first place.
 
+## Checking the Dashboard in a Browser
+
+Use `npm run live-check -- [--repo owner/name] [--base URL] [--token-env VAR]
+[--screenshot file.png]` whenever a done criterion says "verified on the live
+site" or you want to see a local build render. It drives the installed Chrome
+headless and prints the page text, alerts, every GitHub API request with its
+method and status, console errors, and storage, and it exits 1 on any non-GET
+request. For a local build, run `npm run build && npm run preview` and pass
+`--base http://localhost:4173/genesis-dashboard/`. Pass a token as
+`GDTOK=$(gh auth token) npm run live-check -- --token-env GDTOK`; it's redacted
+from the output.
+
+Don't write a throwaway Playwright script for this. All four live checks in
+milestone 1 did, and all four first failed on `chromium.launch()`, because
+Playwright's bundled Chromium isn't installed on the host. The script needs no
+dependency, so it's there in every mode. If it can't do what a check needs,
+extend it instead of working around it.
+
 ## Changing Your Own `.claude/`
 
 You can't, and no configuration change makes you able to. This is measured, not
